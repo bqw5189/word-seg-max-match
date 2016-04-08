@@ -129,3 +129,74 @@ string SegmentSentence(string s1) {
 
     return s2;
 }
+
+string prf(string segment, string answer){
+    vector<string> segmentWord;
+    vector<string> answerWord;
+    split(segment,segmentWord, " ");
+    split(answer,answerWord, " ");
+
+    int segmentWordCount = segmentWord.size();
+    int segmentWordSearchCount = count(segmentWord);
+    float precision = segmentWordSearchCount*1.0/segmentWordSearchCount * 100;
+
+    int answerWordCount = answerWord.size();
+    int answerWordSearchCount = count(answerWord);
+    int recall = answerWordSearchCount*1.0/answerWordCount * 100;
+
+    float f = (segmentWordSearchCount*1.0/segmentWordSearchCount) * (answerWordSearchCount*1.0/answerWordCount)*2/(segmentWordSearchCount*1.0/segmentWordSearchCount+answerWordSearchCount*1.0/answerWordCount) * 100;
+
+    cout << "识别出的个体总数:" << segmentWordCount << " 正确识别的个体总数:" << segmentWordSearchCount << " 正确率(Precision): " << precision << "%" << endl;
+    cout << "测试集中存在的个体总数:" << answerWordCount << " 正确识别的个体总数:" << answerWordSearchCount << " 召回率(Recall) : " << recall << "%" << endl;
+    cout << "F值:" << f << "%" << endl;
+
+    return "";
+}
+
+int count(vector<string>& source){
+    int count = 0;
+
+    for(vector<string>::iterator it  = source.begin(); it != source.end(); ++it )
+    {
+        if (Find(*(it))){
+            count++;
+        }
+    }
+
+    return count;
+}
+
+//注意：当字符串为空时，也会返回一个空字符串
+int split(const string& str, vector<string>& ret_, string sep)
+{
+    if (str.empty())
+    {
+        return 0;
+    }
+
+    string tmp;
+    string::size_type pos_begin = str.find_first_not_of(sep);
+    string::size_type comma_pos = 0;
+
+    while (pos_begin != string::npos)
+    {
+        comma_pos = str.find(sep, pos_begin);
+        if (comma_pos != string::npos)
+        {
+            tmp = str.substr(pos_begin, comma_pos - pos_begin);
+            pos_begin = comma_pos + sep.length();
+        }
+        else
+        {
+            tmp = str.substr(pos_begin);
+            pos_begin = comma_pos;
+        }
+
+        if (!tmp.empty())
+        {
+            ret_.push_back(tmp);
+            tmp.clear();
+        }
+    }
+    return 0;
+}
